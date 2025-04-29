@@ -49,9 +49,27 @@ server.post("/api/fish", async (req, res) => {
         scientific_name,
         depth_range,
         behavior
-        
     ])
+    
+    connection.end();
+    res.status(201).json({
+        success: true,
+        id: result.insertId
+    })
+});
 
-    res.json({})
+server.put("/api/fish/:id", async (req, res) => {
+    const connection = await getDBconnection();
+    const {id} = req.params;
+    const { name, scientific_name, depth_range, behavior } = req.body;
+    const sqlQuery = "UPDATE fishes SET name = ?, scientific_name = ?, depth_range = ?, behavior = ? WHERE id = ?"; 
+    const [result] = await connection.query(sqlQuery, [name, scientific_name, depth_range, behavior, id]);
+    console.log(result);
+    
+    connection.end();
+    res.json({
+        success: true,
+        id: result.insertId
+    });
 })
 
