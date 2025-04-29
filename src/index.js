@@ -2,16 +2,19 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
+require('dotenv').config();
+
 
 const server = express();
 
 async function getDBconnection() {
     const connection = await mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "SantoySeña31",
-        database: "IndoAquarium"
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
     });
+    
     connection.connect();
     return connection;
 }
@@ -19,7 +22,8 @@ async function getDBconnection() {
 server.use(cors());
 server.use(express.json());
 
-const port = 5001;
+const port = process.env.PORT || 5001;
+
 server.listen(port, () => {
     console.log(`Server is listening in http://localhost:${port}`)
 });
